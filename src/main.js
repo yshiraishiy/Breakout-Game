@@ -6,6 +6,9 @@ const ctx = canvas.getContext("2d");
 
 let score = 0;
 
+const brickRowCount = 9;
+const brickColumnCount = 5;
+
 // ボールを作成
 const ball = {
   x: canvas.width / 2,
@@ -26,6 +29,27 @@ const paddle = {
   dx: 0,
 };
 
+// ブロックを作成
+const brickInfo = {
+  w: 70,
+  h: 20,
+  padding: 10,
+  offsetX: 45,
+  offsetY: 60,
+  visible: true,
+};
+
+// ブロック群を作成
+const bricks = [];
+for (let i = 0; i < brickRowCount; i++) {
+  bricks[i] = [];
+  for (let j = 0; j < brickColumnCount; j++) {
+    const x = i * (brickInfo.w + brickInfo.padding) + brickInfo.offsetX;
+    const y = j * (brickInfo.h + brickInfo.padding) + brickInfo.offsetY;
+    bricks[i][j] = { x, y, ...brickInfo };
+  }
+}
+
 // キャンバスにボールを描く
 function drawBall() {
   ctx.beginPath();
@@ -44,17 +68,33 @@ function drawPaddle() {
   ctx.closePath();
 }
 
+// キャンバスにスコアを描く
+function drawScore() {
+  ctx.font = "20px Arial";
+  ctx.fillText(`Score: ${score}`, canvas.width - 100, 30);
+}
+
+// キャンバスにブロックを描く
+function drawBricks() {
+  bricks.forEach((column) => {
+    column.forEach((brick) => {
+      ctx.beginPath();
+      ctx.rect(brick.x, brick.y, brick.w, brick.h);
+      ctx.fillStyle = brick.visible ? "#0095dd" : "transparent";
+      ctx.fill();
+      ctx.closePath();
+    });
+  });
+}
+
+console.log(bricks);
+
 // 全てのキャンバス要素を描く
 function draw() {
   drawBall();
   drawPaddle();
   drawScore();
-}
-
-// キャンバスにスコアを描く
-function drawScore() {
-  ctx.font = "20px Arial";
-  ctx.fillText(`Score: ${score}`, canvas.width - 100, 30);
+  drawBricks();
 }
 
 draw();
