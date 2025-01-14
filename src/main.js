@@ -89,15 +89,67 @@ function drawBricks() {
 
 console.log(bricks);
 
+// キャンバス上でパドルを動かす
+function movePaddle() {
+  paddle.x += paddle.dx;
+
+  // 壁を検出
+  if (paddle.x + paddle.w > canvas.width) {
+    paddle.x = canvas.width - paddle.w;
+  }
+
+  if (paddle.x < 0) {
+    paddle.x = 0;
+  }
+}
+
 // 全てのキャンバス要素を描く
 function draw() {
+  // キャンバスをクリア
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   drawBall();
   drawPaddle();
   drawScore();
   drawBricks();
 }
 
-draw();
+// キャンバスを描きアニメーションを更新
+function update() {
+  movePaddle();
+
+  // 全てを描く
+  draw();
+
+  requestAnimationFrame(update);
+}
+
+update();
+
+// 'keyDown'イベント
+function keyDown(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    paddle.dx = paddle.speed;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    paddle.dx = -paddle.speed;
+  }
+}
+
+// 'keyUp'イベント
+function keyUp(e) {
+  if (
+    e.key === "Right" ||
+    e.key === "ArrowRight" ||
+    e.key === "left" ||
+    e.key === "ArrowLeft"
+  ) {
+    paddle.dx = 0;
+  }
+}
+
+// キーボードイベントハンドラー
+document.addEventListener("keydown", keyDown);
+document.addEventListener("keyup", keyUp);
 
 // ルールを開いたり閉じたり
 rulesBtn.addEventListener("click", () => {
