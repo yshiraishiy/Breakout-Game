@@ -139,8 +139,34 @@ function moveBall() {
         ) {
           ball.dy *= -1;
           brick.visible = false;
+
+          increaseScore();
         }
       }
+    });
+  });
+
+  // 壁の底にボールが当たる(負け)
+  if (ball.y + ball.size > canvas.height) {
+    showAllBricks();
+    score = 0;
+  }
+}
+
+// スコアを上げる
+function increaseScore() {
+  score++;
+
+  if (score % (brickRowCount * brickColumnCount) === 0) {
+    showAllBricks();
+  }
+}
+
+// 全てのブロックを表示
+function showAllBricks() {
+  bricks.forEach((column) => {
+    column.forEach((brick) => {
+      brick.visible = true;
     });
   });
 }
@@ -183,7 +209,7 @@ function keyUp(e) {
   if (
     e.key === "Right" ||
     e.key === "ArrowRight" ||
-    e.key === "left" ||
+    e.key === "Left" ||
     e.key === "ArrowLeft"
   ) {
     paddle.dx = 0;
